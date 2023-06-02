@@ -1,4 +1,4 @@
-# Telemetry-Firmware-FE10
+# Telemetry Firmware
 Viewing graphs from live telemetry data
 
 CAN=> TEENSY =UART=> ESP32 =WIFI=> ESP32 =Serial=> Laptop
