@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+# NOTES:
+# change portName in main, can use get_serial_ports.py to find ports
+# line labels and graph aesthetics still in progress
 
 from threading import Thread
 import serial
