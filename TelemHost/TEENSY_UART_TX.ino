@@ -1,53 +1,58 @@
 #include "Packet.h"
 
-int canid;
-int id;
-short data[4];
-byte fill[4];
-unsigned long timer = 0;
-unsigned long startTime = 0;
+int canId;
+int id = -1;
+short data[2][4];
+byte wheelUpdated[4] = {0, 0, 0, 0};
+unsigned long time;
+unsigned long startTime;
 
 // for simulation
-int canidvals[] = {0x470, 0x471, 0x472, 0x473, 0x475};
-int canidindex = 0;
+int canIdVals[] = {0x470, 0x471, 0x472, 0x473, 0x475};
+int canIdIndex = 0;
 
-void setup() 
-{
-  Serial.begin(115200);
-  Serial2.begin(9600, SERIAL_8N1);
+void setup() {
+  Serial.begin(115200);  // for debugging
+  Serial2.begin(9600, SERIAL_8N1);  // for UART
   startTime = micros();
-  reset();
 }
 
-void loop() 
-{
-  for(short modulator = 0; modulator < 50; modulator++)
+void loop() {
+  // currently simulating can messages, replace with real can access code
+  for(short fakeData = 0; fakeData < 50; fakeData++)
   {
-    canid = canidvals[canidindex % 5];
-    if (canid >= 0x470 && canid <= 0x473) {
-      id = 0;  // wheel speed
-      data[canid - 0x470] = modulator;
-      fill[canid - 0x470] = 1;
-    } else if (id == -1 && canid == 0x475) {
-      id = 1; // steering
-      data[0] = modulator;
+    canId = canIdVals[canIdIndex++ % 5];
+
+    if (canId >= 0x470 && canId <= 0x473) {
+      // wheel speed data
+      id = 0;
+      // could include math here to convert sensor data to speed
+      data[id][canId - 0x470] = fakeData;
+      wheelUpdated[canId - 0x470] = 1;
+    } else if (canId == 0x475) {
+      // steering data
+      id = 1;
+      data[id][0] = fakeData;
     }
-    if (id == 1 || (fill[0] && fill[1] && fill[2] && fill[3])) {
-      timer = micros() - startTime;
-      Packet p(id, data, timer);
+
+    if (id == 1 || (id == 0 && wheelUpdated[0] && wheelUpdated[1] && wheelUpdated[2] && wheelUpdated[3])) {
+      // enough data received to send a packet
+      time = micros() - startTime;
+      Packet p(id, data[id], time);
       send(&p);
       reset();
     }
-    canidindex++;
   } 
 }
 
 void reset() {
+  if (id == 0) {
+    wheelUpdated[0] = 0;
+    wheelUpdated[1] = 0;
+    wheelUpdated[2] = 0;
+    wheelUpdated[3] = 0;
+  }
   id = -1;
-  fill[0] = 0;
-  fill[1] = 0;
-  fill[2] = 0;
-  fill[3] = 0;
 }
 
 void send(Packet* p) {
