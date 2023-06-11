@@ -1,12 +1,12 @@
 #include "esp_now.h"
 #include <WiFi.h>
 
-unsigned long timer = 0;
-long loopTime = 5000; 
+unsigned long timer;
+unsigned long currTime;
+long loopTime = 5000;  // in microseconds
 
-void setup() 
-{
-  // Initialize Serial Connection
+void setup() {
+  // Initialize Serial Connection to PC
   Serial.begin(38400);
 
   // Set device as a Wi-Fi Station
@@ -24,34 +24,26 @@ void setup()
   timer = micros();
 }
 
-void loop() 
-{
-
+void loop() {
+  // Nothing here since action is only taken when data is received
 }
 
-void timeSync(unsigned long deltaT)
-{
-  unsigned long currTime = micros();
+void timeSync(unsigned long deltaT) {
+  currTime = micros();
   long timeToDelay = deltaT - (currTime - timer);
-  if (timeToDelay > 5000)
-  {
+  if (timeToDelay > 5000) {
     delay(timeToDelay / 1000);
     delayMicroseconds(timeToDelay % 1000);
-  }
-  else if (timeToDelay > 0)
-  {
+  } else if (timeToDelay > 0) {
     delayMicroseconds(timeToDelay);
-  }
-  else
-  {
+  } else {
       // timeToDelay is negative so we start immediately
   }
   timer = currTime + timeToDelay;
 }
 
 // callback function that will be executed when data is received
-void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) 
-{
+void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   timeSync(loopTime);
   Serial.write(incomingData, len);
 }
