@@ -47,14 +47,14 @@ class serialPlot:
       sys.exit("Failed to connect with " + str(serialPort) + ' at ' + str(serialBaud) + ' BAUD.')
 
   def readSerialStart(self):
-    # if self.thread == None:
+    if self.thread == None:
       self.thread = Thread(target=self.backgroundThread)
       self.thread.start()
       # Block till we start receiving values
       while self.isReceiving != True:
         time.sleep(0.1)
 
-  def getSerialData(self, frame, plt, ax, lines, lineValueText, lineLabel, intervalText, timeRange):
+  def getSerialData(self, frame, ax, lines, lineValueText, lineLabel, intervalText, timeRange):
     # make a copy of the current data in the buffer
     currData = copy.deepcopy(self.rawData[:])
     if currData == self.prevData:
@@ -175,7 +175,7 @@ def main():
   intervalText = ax[0].text(0.35, 1.1, '', transform=ax[0].transAxes)
 
   # initialize animation that will continuously update until closed
-  anim = Anim(animation.FuncAnimation(fig, s.getSerialData, fargs=(plt, ax, lines, lineValueText, lineLabel, intervalText, timeRange), interval=pltInterval))
+  anim = Anim(animation.FuncAnimation(fig, s.getSerialData, fargs=(ax, lines, lineValueText, lineLabel, intervalText, timeRange), interval=pltInterval))
   fig.canvas.mpl_connect('key_press_event', anim.togglePause)
   plt.show()
   s.close()
