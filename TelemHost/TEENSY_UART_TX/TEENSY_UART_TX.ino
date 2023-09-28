@@ -4,7 +4,7 @@ int canId;
 int id = -1;
 short data[2][4];
 byte wheelUpdated[4] = {0, 0, 0, 0};
-unsigned long time;
+unsigned long t;
 unsigned long startTime;
 
 // for simulation
@@ -19,7 +19,7 @@ void setup() {
 
 void loop() {
   // currently simulating can messages, replace with real can access code
-  for(short fakeData = 0; fakeData < 50; fakeData++)
+ /*for(short fakeData = 0; fakeData < 50; fakeData++)
   {
     canId = canIdVals[canIdIndex++ % 5];
 
@@ -37,12 +37,13 @@ void loop() {
 
     if (id == 1 || (id == 0 && wheelUpdated[0] && wheelUpdated[1] && wheelUpdated[2] && wheelUpdated[3])) {
       // enough data received to send a packet
-      time = micros() - startTime;
-      Packet p(id, data[id], time);
+      t = micros() - startTime;
+      Packet p(id, data[id], t);
       send(&p);
       reset();
     }
-  } 
+  } */
+  Serial2.print("Its alliiiivie\n");
 }
 
 void reset() {

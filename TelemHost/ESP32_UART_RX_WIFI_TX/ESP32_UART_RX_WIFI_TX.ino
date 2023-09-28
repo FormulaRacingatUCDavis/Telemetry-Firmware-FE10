@@ -4,12 +4,15 @@
 #define RXD2 17
 #define TXD2 16
 
+#define TEST_ESP_ADDRESS {0x24, 0x6F, 0x28, 0x7A, 0x93, 0x44}
+#define TRANCEIVER_ADDRESS {0x24, 0x0A, 0xC4, 0x61, 0x50, 0xC8}
+
 esp_now_peer_info_t peerInfo;
 
 // REPLACE WITH YOUR RECEIVER MAC Address
 // 24:0A:C4:61:50:C8 transceiver
 // 24:6F:28:7A:93:44 test esp32
-uint8_t broadcastAddress[] = {0x24, 0x6F, 0x28, 0x7A, 0x93, 0x44};
+uint8_t broadcastAddress[] = TRANCEIVER_ADDRESS;
 
 // buffer for receiving and sending packets
 uint8_t data[Packet::length];

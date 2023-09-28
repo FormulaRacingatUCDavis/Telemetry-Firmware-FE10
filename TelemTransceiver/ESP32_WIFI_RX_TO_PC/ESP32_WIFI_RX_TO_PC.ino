@@ -8,7 +8,6 @@ long loopTime = 5000;  // in microseconds
 void setup() {
   // Initialize Serial Connection to PC
   Serial.begin(38400);
-
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
 
