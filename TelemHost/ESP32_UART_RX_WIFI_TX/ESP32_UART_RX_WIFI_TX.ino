@@ -19,7 +19,7 @@ uint8_t data[Packet::length];
 
 void setup() {
   Serial.begin(115200);  // for debugging
-  Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);  // for UART
+  Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2);  // for UART
 
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
